@@ -6810,7 +6810,6 @@ const x = 128 + 64;
 let i = 99 + 1 - 2 * 5;
 const y = x + 5;
 const hoge = "fuga hoge" + " " + "foo bar";
-const x = hoge;
 
 func someFunc(arg1, arg2) {
   const x = arg1 + arg2;
