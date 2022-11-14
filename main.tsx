@@ -65,7 +65,16 @@ println(hoge, "1", 10, y, x, someFunc(42, 42));
         <pre>{error}</pre>
       </div>
       <div>
-        <pre style={{ width: "800px", background: "#444", color: "#eee", maxHeight: "8em", overflow: "auto", lineHeight: "1", padding: "4px 8px", borderRadius: "8px" }}>{result}</pre>
+        <pre style={{
+          width: "800px",
+          background: "#444",
+          color: "#eee",
+          maxHeight: "8em",
+          overflow: "auto",
+          lineHeight: "1",
+          padding: "4px 8px",
+          borderRadius: "8px"
+        }}>{result}</pre>
       </div>
     </div>
   );
