@@ -6,17 +6,9 @@ declare global {
   const document: any;
 }
 
-function debounce<T extends Array<any>>(fn: (...args: T) => void, interval: number) {
-  let timer: number;
-  return (...args: T) => {
-    clearTimeout(timer)
-    timer = setTimeout(() => (fn(...args)), interval);
-  }
-}
-
 const root = createRoot(document.body);
 
-function _execCode(code: string, setResult: (result: string) => void, setError: (error: string) => void) {
+function _execCode(code: string, setError: (error: string) => void) {
   try {
     const tokens = tokenize(code);
     const ast = parse(tokens);
@@ -26,8 +18,6 @@ function _execCode(code: string, setResult: (result: string) => void, setError: 
     setError(e.stack);
   }
 }
-
-const execCode = debounce(_execCode, 300);
 
 const log = console.log;
 
@@ -40,7 +30,11 @@ const hoge = "fuga hoge" + " " + "foo bar";
 
 func someFunc(arg1, arg2) {
   const x = arg1 + arg2;
-  return x;
+
+  func innerFunc(hoge) {
+    return hoge * 12;
+  }
+  return innerFunc(x);
 }
 
 println(hoge, "1", 10, y, x, someFunc(42, 42));
@@ -49,13 +43,10 @@ println(hoge, "1", 10, y, x, someFunc(42, 42));
   const [result, setResult] = useState("");
   const [error, setError] = useState("");
   useEffect(() => {
-    execCode(code, () => {}, setError);
-  }, [code]);
-  useEffect(() => {
     console.log = (...args: any[]) => {
       setResult(r => `${r}\n${args.join(" ")}`.trim());
     }
-  }, [])
+  }, []);
   return (
     <div>
       <div>
@@ -64,6 +55,7 @@ println(hoge, "1", 10, y, x, someFunc(42, 42));
       <div style={{color: "red"}}>
         <pre>{error}</pre>
       </div>
+      <button onClick={() => _execCode(code, setError)}>run</button>
       <div>
         <pre style={{
           width: "800px",

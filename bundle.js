@@ -6784,15 +6784,8 @@ var ga = br((lu)=>{
     lu.createRoot = ya.createRoot, lu.hydrateRoot = ya.hydrateRoot;
 });
 var Sa = Pa(ga()), { createRoot: If , hydrateRoot: jf  } = Sa, { default: wa , ...Tf } = Sa;
-function debounce(fn, interval) {
-    let timer;
-    return (...args)=>{
-        clearTimeout(timer);
-        timer = setTimeout(()=>fn(...args), interval);
-    };
-}
 const root = If(document.body);
-function _execCode(code, setResult, setError) {
+function _execCode(code, setError) {
     try {
         const tokens = tokenize(code);
         const ast = parse(tokens);
@@ -6802,7 +6795,6 @@ function _execCode(code, setResult, setError) {
         setError(e.stack);
     }
 }
-const execCode = debounce(_execCode, 300);
 console.log;
 const App = ()=>{
     const [code, setCode] = Me(`
@@ -6813,18 +6805,17 @@ const hoge = "fuga hoge" + " " + "foo bar";
 
 func someFunc(arg1, arg2) {
   const x = arg1 + arg2;
-  return x;
+
+  func innerFunc(hoge) {
+    return hoge * 12;
+  }
+  return innerFunc(x);
 }
 
 println(hoge, "1", 10, y, x, someFunc(42, 42));
   `.trim());
     const [result, setResult] = Me("");
     const [error, setError] = Me("");
-    De(()=>{
-        execCode(code, ()=>{}, setError);
-    }, [
-        code
-    ]);
     De(()=>{
         console.log = (...args)=>{
             setResult((r)=>`${r}\n${args.join(" ")}`.trim());
@@ -6839,9 +6830,11 @@ println(hoge, "1", 10, y, x, someFunc(42, 42));
         style: {
             color: "red"
         }
-    }, We.createElement("pre", null, error)), We.createElement("div", null, We.createElement("pre", {
+    }, We.createElement("pre", null, error)), We.createElement("button", {
+        onClick: ()=>_execCode(code, setError)
+    }, "run"), We.createElement("div", null, We.createElement("pre", {
         style: {
-            width: "100%",
+            width: "800px",
             background: "#444",
             color: "#eee",
             maxHeight: "8em",
